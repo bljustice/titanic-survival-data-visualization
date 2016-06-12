@@ -93,7 +93,7 @@ I reached out to 3 different people about my initial visualization and they each
 
 
 ##Resources
-https://www.kaggle.com/c/titanic/data
-https://bl.ocks.org/mbostock/1134768
-http://bl.ocks.org/hlucasfranca/f133da4493553963e710
-https://bl.ocks.org/mbostock/3886208
+  * https://www.kaggle.com/c/titanic/data
+  * https://bl.ocks.org/mbostock/1134768
+  * http://bl.ocks.org/hlucasfranca/f133da4493553963e710
+  * https://bl.ocks.org/mbostock/3886208
