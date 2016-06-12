@@ -54,6 +54,33 @@ Below is a screenshot of the results of these changes, which show much for user-
 
 ![alt text](https://github.com/bljustice/titanic-survival-data-visualization/blob/master/second-feedback-implemented.png)
 
+Finally, for my third set of feedback, I added 5 pixels of padding between each bar by updating the width values of each rectangle appended to the original svg layers I created. Below is the final code showing this update.
+
+```javascript
+layer.selectAll("rect")
+  .data(function(d) { return d; })
+  .enter().append("rect")
+  .attr("x", function(d) { return xScale(d.x); })
+  .attr("y", function(d) { return yScale(d.y + d.y0); })
+  .attr("height", function(d) { return yScale(d.y0) - yScale(d.y + d.y0); })
+  .attr("width", xScale.rangeBand() - 5)
+  .on("mouseover", showSurvivalData)
+  .on("mouseout", removeSurvivalData);
+```
+I also noticed that the mouseover and legend fonts were not the same as the axes, so I updated them to all match using this CSS.
+
+```CSS
+text {
+  font-family: sans-serif;
+  font-size: 11px;
+}
+```
+
+Below is a screenshot of these changes in the final `index.html` file.
+
+![alt text](https://github.com/bljustice/titanic-survival-data-visualization/blob/master/third-feedback-implemented.png)
+
+
 ##Feedback
 Below is a screenshot of the initial design of my bar chart.
 
