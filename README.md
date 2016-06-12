@@ -82,7 +82,6 @@ Below is a screenshot of these changes in the final `index.html` file.
 
 
 ##Feedback
-Below is a screenshot of the initial design of my bar chart.
 
 I reached out to 3 different people about my initial visualization and they each had different feedback, which I have listed below.
 
