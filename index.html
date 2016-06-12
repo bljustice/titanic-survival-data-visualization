@@ -127,7 +127,7 @@
           .on("mouseover", showSurvivalData)
           .on("mouseout", removeSurvivalData);
 
-          // create legend based on survived and died color codes
+        // create legend based on survived and died color codes
         var legend = svg.selectAll('.legend')
           .data(color.domain().slice().filter(function(d) { return d !== 0 && d !== 1; }))
           .enter().append("g")
