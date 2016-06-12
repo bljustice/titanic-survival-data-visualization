@@ -22,6 +22,10 @@
         stroke: #000;
         shape-rendering: crispEdges;
       }
+      text {
+        font-family: sans-serif;
+        font-size: 11px;
+      }
     </style>
   </head>
   <body>
@@ -119,7 +123,7 @@
           .attr("x", function(d) { return xScale(d.x); })
           .attr("y", function(d) { return yScale(d.y + d.y0); })
           .attr("height", function(d) { return yScale(d.y0) - yScale(d.y + d.y0); })
-          .attr("width", xScale.rangeBand())
+          .attr("width", xScale.rangeBand() - 5)
           .on("mouseover", showSurvivalData)
           .on("mouseout", removeSurvivalData);
 
