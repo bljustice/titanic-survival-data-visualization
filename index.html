@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <style>
+      h1 {
+        font-family: sans-serif;
+        font-size: 16px;
+      }
+      rect:hover {
+        fill: #6b486b;
+      }
+      .axis,
+      .label {
+        font-family: sans-serif;
+        font-size: 11px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Titanic Passenger Survival Status by Age Group</h1>
+    <script>
+
+      // create margin, height, and width of svg
+      var margin = {top: 20, right: 50, bottom: 35, left: 40},
+          width = 960 - margin.left - margin.right,
+          height = 500 - margin.top - margin.bottom;
+      // create x scale
+      var xScale = d3.scale.ordinal()
+          .rangeRoundBands([0, width]);
+
+      // create y scale
+      var yScale = d3.scale.linear()
+          .rangeRound([height, 0]);
+
+      // create color scale
+      var color = d3.scale.ordinal()
+        .range(["#999999", "#FF9900"]);
+
+      // create x axis
+      var xAxis = d3.svg.axis()
+          .scale(xScale)
+          .orient("bottom");
+
+      // create y axis
+      var yAxis = d3.svg.axis()
+          .scale(yScale)
+          .orient("left");
+
+      // create svg element
+      var svg = d3.select("body").append("svg")
+          .attr("width", width + margin.left + margin.right)
+          .attr("height", height + margin.top + margin.bottom)
+          .append("g")
+          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+      d3.csv("titanic_grouped_data.csv", type, function(error, data) {
+        if (error) throw error;
+
+        // set color domain
+        color.domain(d3.keys(data[0]).filter(function(d) { return d !== 'Age Category' && d !== ''; }));
+
+        // map color domain values to age category in dataset
+        var layers = d3.layout.stack()(color.domain().map(function(category) {
+          return data.map(function(d) {
+            return {x:d['Age Category'], y: d[category]};
+          });
+        }));
+
+        // set x domain to the age groups
+        xScale.domain(layers[0].map(function(d) { return d.x; }));
+
+        // set y domain to 0 - max bar height of both survived and died passengers
+        yScale.domain([0, d3.max(layers[layers.length - 1], function(d) { return d.y0 + d.y; })])
+
+        // create x axis in svg
+        svg.append("g")
+          .attr("class", "x axis")
+          .attr("transform", "translate(0," + height +  ")")
+          .call(xAxis);
+
+        // create y axis in svg
+        svg.append("g")
+          .attr("class", "y axis")
+          .call(yAxis);
+
+        // add x-axis label
+        svg.append("text")
+          .attr("class", "x-axis label")
+          .attr("text-anchor", "middle")
+          .attr("transform", "translate(" + width / 2 + "," + (height + 28) + ")")
+          .text("Passenger Age Group");
+
+        // create layer for bar graph level
+        var layer = svg.selectAll(".layer")
+          .data(layers)
+          .enter().append("g")
+          .attr("class", "layer")
+          .style("fill", function(d, i) { return color(i); });
+
+        // append rectangles to layers
+        layer.selectAll("rect")
+          .data(function(d) { return d; })
+          .enter().append("rect")
+          .attr("x", function(d) { return xScale(d.x); })
+          .attr("y", function(d) { return yScale(d.y + d.y0); })
+          .attr("height", function(d) { return yScale(d.y0) - yScale(d.y + d.y0); })
+          .attr("width", xScale.rangeBand())
+          .on("mouseover", showSurvivalData)
+          .on("mouseout", removeSurvivalData);
+
+          // create legend based on survived and died color codes
+        var legend = svg.selectAll('.legend')
+          .data(color.domain().slice().filter(function(d) { return d !== 0 && d !== 1; }))
+          .enter().append("g")
+          .attr("class", "legend")
+          .attr("transform", function(d, i) { return "translate(20," + i * 20 + ")"; })
+          .text(function(d) { return d; });
+
+        legend.append("rect")
+          .attr("x", width - 18)
+          .attr("width", 18)
+          .attr("height", 18)
+          .style("fill", color);
+
+        legend.append("text")
+          .attr("x", width - 24)
+          .attr("y", 9)
+          .attr("dy", ".35em")
+          .style("text-anchor", "end")
+          .text(function(d) { return d; });
+
+        // add event handler function for mouseovers that displays count of particular instance hovered over
+        function showSurvivalData(d, i) {
+          svg.append("text")
+            .attr({
+              id: "text" + d.x + "-" + d.y + "-" + i,
+              x: function() { return xScale(d.x); },
+              y: function() { return yScale(d.y + d.y0); },
+            })
+            .text(function() { return d.y; });
+        }
+        // add event handler function to remove the element when mouseout occurs
+        function removeSurvivalData(d, i) {
+          d3.select("#text" + d.x + "-" + d.y + "-" + i).remove();
+        }
+      });
+
+      // Convert survived and died columns to integer values for correct y scaling
+      function type(d) {
+        ["Survived", "Died"].forEach(function(column) { d[column] = +d[column]; });
+        return d;
+      }
+    </script>
+  </body>
+</html>
