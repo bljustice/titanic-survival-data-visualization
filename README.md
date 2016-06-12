@@ -6,10 +6,30 @@ For this project, I visualized the # of titanic passengers that surived or died 
 ##Design
 As stated in the summary portion, I decided to use a stacked bar chart for the design of this project. Bar charts are very useful for visualizing categorical data so I thought this was the best choice for conveying the purpose of the visualization. I used grey and orange colors for the two different categories since they're two of my favorite colors with a legend to show users which color defined a particular subgroup. Finally, I used 2 different mouseover events to change the color of the particular bar to purple and display how many passengers were included in that particular group to make it easier to interpret the information displayed.
 
-##Feedback
-Below is a screenshot of the initial design of my bar chart.
+I recieved 3 different sets of feedback on the visualization. I have included screenshots as to how I changed my visualization based on them.
+
+Below is a screenshot of my initial visualization draft.
 
 ![alt text](https://github.com/bljustice/titanic-survival-data-visualization/blob/master/first-design.png)
+
+To address the first set of feedback I received, I added a `transform` attribute to the text element appended by the mouseover function. This centered the text above each bar in the chart to make it easier to read. Below is the function with this attribute added and a screenshot of the visualization with the updates.
+```javascript
+function showSurvivalData(d, i) {
+  svg.append("text")
+    .attr({
+      id: "text" + d.x + "-" + d.y + "-" + i,
+      x: function() { return xScale(d.x); },
+      y: function() { return yScale(d.y + d.y0); },
+    })
+    .attr("transform", "translate(40,-5)")
+    .text(function() { return d.y; });
+}
+```
+
+![alt text](https://github.com/bljustice/titanic-survival-data-visualization/blob/master/first-feedback-implemented.png)
+
+##Feedback
+Below is a screenshot of the initial design of my bar chart.
 
 I reached out to 3 different people about my initial visualization and they each had different feedback, which I have listed below.
 
