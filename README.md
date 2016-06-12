@@ -9,8 +9,7 @@ As stated in the summary portion, I decided to use a stacked bar chart for the d
 ##Feedback
 Below is a screenshot of the initial design of my bar chart.
 
-
-
+![alt text](https://github.com/bljustice/titanic-survival-data-visualization/blob/master/first-design.png")
 
 I reached out to 3 different people about my initial visualization and they each had different feedback, which I have listed below.
 
