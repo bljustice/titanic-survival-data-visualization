@@ -1,12 +1,12 @@
 #Titanic Passenger Survival Status Based on Age
 
 ##Summary
-For this project, I visualized the # of titanic passengers that surived or died based on their age. I decided to use a stacked bar chart to show each age groups subset of survival status. I used R to aggregate each survivor status using custom age groups I defined using R. The original dataset is names titanic_data.csv and the grouped version of this document used for the visualization is called titanic_grouped_data.csv.
+For this project, I visualized the number of titanic passengers that surived or died based on their age group. I decided to use a stacked bar chart to show this. I used R to aggregate each survivor's status using custom age groups, and wrote a new csv with this aggregated data. The original dataset is names `titanic_data.csv` and the grouped version of this document used for the visualization is called `titanic_grouped_data.csv`.
 
 ##Design
-As stated in the summary portion, I decided to use a stacked bar chart for the design of this project. Bar charts are very useful for visualizing categorical data so I thought this was the best choice for conveying the purpose of the visualization. I used grey and orange colors for the two different categories since they're two of my favorite colors with a legend to show users which color defined a particular subgroup. Finally, I used 2 different mouseover events to change the color of the particular bar to purple and display how many passengers were included in that particular group to make it easier to interpret the information displayed.
+As stated in the summary portion, I decided to use a stacked bar chart for the design of this project. Bar charts are very useful for visualizing categorical data so I thought this was the best choice for conveying the purpose of the visualization. I used grey and orange colors for the two different categories since they're two of my favorite colors, and a legend to show users which color defined a particular subgroup. Finally, I used 2 different mouseover events, one changed the color of the particular bar hovered over to purple and the other displayed how many passengers were included in that particular group to make it easier to interpret the information displayed.
 
-I recieved 3 different sets of feedback on the visualization. I have included screenshots as to how I changed my visualization based on them.
+I received 3 different sets of feedback on the visualization. I have included screenshots as to how I changed my visualization based on them.
 
 Below is a screenshot of my initial visualization draft.
 
@@ -27,7 +27,7 @@ function showSurvivalData(d, i) {
 ```
 ![alt text](https://github.com/bljustice/titanic-survival-data-visualization/blob/master/first-feedback-implemented.png)
 
-To address the second round of feedback I received, I updated the axes lines to be more complementary to the actual ticks for each axis. I did this using the following CSS, which can be seen in the `head` of the HTML file included in this repository. This CSS was used from one of Mike Bostock's stacked bar charts listed in the sources of this repository.
+To address the second round of feedback I received, I updated the axes' lines to be more complementary to the actual ticks for each axis. I did this using the following CSS, which can be seen in the `head` of the `index.html` file included in this repository. This CSS was used from one of Mike Bostock's stacked bar charts listed in the sources of this README file.
 ```CSS
 .axis path,
 .axis line {
@@ -67,7 +67,7 @@ layer.selectAll("rect")
   .on("mouseover", showSurvivalData)
   .on("mouseout", removeSurvivalData);
 ```
-I also noticed that the mouseover and legend fonts were not the same as the axes, so I updated them to all match using this CSS.
+I also noticed that the mouseover and legend fonts were not the same as the axes, so I updated them to all match using the following CSS.
 
 ```CSS
 text {
