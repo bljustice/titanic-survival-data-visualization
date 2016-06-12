@@ -25,8 +25,34 @@ function showSurvivalData(d, i) {
     .text(function() { return d.y; });
 }
 ```
-
 ![alt text](https://github.com/bljustice/titanic-survival-data-visualization/blob/master/first-feedback-implemented.png)
+
+To address the second round of feedback I received, I updated the axes lines to be more complementary to the actual ticks for each axis. I did this using the following CSS, which can be seen in the `head` of the HTML file included in this repository. This CSS was used from one of Mike Bostock's stacked bar charts listed in the sources of this repository.
+```CSS
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+```
+
+I also added a y-axis label to make it more readable to users. Below is the final code used to render the y axis.
+```javascript
+svg.append("g")
+  .attr("class", "y axis")
+  .call(yAxis)
+  .append("text")
+   .attr("transform", "rotate(-90)")
+   .attr("y", 6)
+   .attr("dy", ".71em")
+   .style("text-anchor", "end")
+   .text("Number of Passengers");
+   ```
+
+Below is a screenshot of the results of these changes, which show much for user-friendly axes.
+
+![alt text](https://github.com/bljustice/titanic-survival-data-visualization/blob/master/second-feedback-implemented.png)
 
 ##Feedback
 Below is a screenshot of the initial design of my bar chart.
@@ -43,3 +69,4 @@ I reached out to 3 different people about my initial visualization and they each
 https://www.kaggle.com/c/titanic/data
 https://bl.ocks.org/mbostock/1134768
 http://bl.ocks.org/hlucasfranca/f133da4493553963e710
+https://bl.ocks.org/mbostock/3886208
