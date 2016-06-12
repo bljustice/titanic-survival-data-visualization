@@ -139,6 +139,7 @@
               x: function() { return xScale(d.x); },
               y: function() { return yScale(d.y + d.y0); },
             })
+            .attr("transform", "translate(40,-5)")
             .text(function() { return d.y; });
         }
         // add event handler function to remove the element when mouseout occurs
