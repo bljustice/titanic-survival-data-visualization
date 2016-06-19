@@ -123,7 +123,7 @@
           .attr("x", function(d) { return xScale(d.x) + 50; })
           .attr("y", function(d) { return yScale(d.y + d.y0); })
           .attr("height", function(d) { return yScale(d.y0) - yScale(d.y + d.y0); })
-          .attr("width", xScale.rangeBand() - 60)
+          .attr("width", xScale.rangeBand() - 100)
           .on("mouseover", showSurvivalData)
           .on("mouseout", removeSurvivalData);
 
