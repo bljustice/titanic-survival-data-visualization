@@ -162,7 +162,13 @@
               x: function() { return xScale(d.x); },
               y: function() { return yScale(d.y + d.y0); },
             })
-            .attr("transform", "translate(78,-5)")
+            .attr("transform", function() {
+              if (d.y >= 100) {
+                return "translate(63,-5)";
+              } else {
+                return "translate(68,-5)";
+              }
+            })
             .text(function() { return [d.y, ((d.y / totalPassengers) * 100).toFixed(2) + "% of Total Passengers"]; });
         }
         // add event handler function to remove the element when mouseout occurs
