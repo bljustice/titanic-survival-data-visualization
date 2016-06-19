@@ -153,8 +153,7 @@
         totalPassengers = d3.sum(data, function(d) { return d.Survived + d.Died; });
 
         /* add event handler function for mouseovers that displays both the count of the particular
-        instance hovered over and what percentage of the total number of passengers included
-        in the dataset, that instance contains */
+        instance hovered over and what percentage of all passengers that instance contains */
         function showSurvivalData(d, i) {
           svg.append("text")
             .attr({
