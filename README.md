@@ -1,10 +1,12 @@
-#Titanic Passenger Survival Status Based on Age
+#Titanic Passenger Survival Status Based on Passenger Class
 
 ##Summary
-For this project, I visualized the number of titanic passengers that surived or died based on their age group. I decided to use a stacked bar chart to show this. I used R to aggregate each survivor's status using custom age groups, and wrote a new csv with this aggregated data. The original dataset is names `titanic_data.csv` and the grouped version of this document used for the visualization is called `titanic_grouped_data.csv`.
+For this project, I visualized the number of titanic passengers that survived or died based on their passenger class. I decided to use a stacked bar chart to show this. I used R to aggregate each survivor's status using each unique passenger class included in the dataset, and wrote a new csv with this aggregated data. The original dataset is names `titanic_data.csv` and the grouped version of this document used for the visualization is called `titanic_grouped_data.csv`.
+
+Class 1 is the highest class and class 3 is the lowest class. Based on my analysis I found that the lower a passenger's status was, the more likely it was that they did not survive after the Titanic crashed. This visualization also shows how much larger the lower class of passengers is compared to the other two classes (about 55% of all passengers included in the dataset).
 
 ##Design
-As stated in the summary portion, I decided to use a stacked bar chart for the design of this project. Bar charts are very useful for visualizing categorical data so I thought this was the best choice for conveying the purpose of the visualization. I used grey and orange colors for the two different categories since they're two of my favorite colors, and a legend to show users which color defined a particular subgroup. Finally, I used 2 different mouseover events, one changed the color of the particular bar hovered over to purple and the other displayed how many passengers were included in that particular group to make it easier to interpret the information displayed.
+As stated in the summary portion, I decided to use a stacked bar chart for the design of this project. Bar charts are very useful for visualizing categorical data so I thought this was the best choice for conveying this visualization's story. I used grey and orange colors for the two different categories since they're two of my favorite colors, and a legend to show users which color defines a particular subgroup. Finally, I used 2 different event handlers to add interactivity. The first changes the color of the particular bar hovered over to purple and displays how many passengers are included in that particular class. It also shows what percentage that group makes up of the entire passenger group. This helps users see how passenger survival is affected for each passenger group compared to the whole group, and also what percentage of passengers belonged to that group in general. The second event removes the element created from the first event once a user navigates away from that part of the chart, and returns the element to its original state.
 
 I received 3 different sets of feedback on the visualization. I have included screenshots as to how I changed my visualization based on them.
 
@@ -12,7 +14,37 @@ Below is a screenshot of my initial visualization draft.
 
 ![alt text](https://github.com/bljustice/titanic-survival-data-visualization/blob/master/first-design.png)
 
-To address the first set of feedback I received, I added a `transform` attribute to the text element appended by the mouseover function. This centered the text above each bar in the chart to make it easier to read. Below is the function with this attribute added and a screenshot of the visualization with the updates.
+To address the first set of feedback I received, I subtracted 100 pixels from the `width` attribute of my rectangle layer, which helped shrink the bars in the visualization and center them over their tick marks.
+
+```javascript
+layer.selectAll("rect")
+  .data(function(d) { return d; })
+  .enter().append("rect")
+  .attr("x", function(d) { return xScale(d.x) + 50; })
+  .attr("y", function(d) { return yScale(d.y + d.y0); })
+  .attr("height", function(d) { return yScale(d.y0) - yScale(d.y + d.y0); })
+  .attr("width", xScale.rangeBand() - 100)
+  .on("mouseover", showSurvivalData)
+  .on("mouseout", removeSurvivalData);
+```
+Below is a screenshot of my visualization after this update.
+
+![alt text](https://github.com/bljustice/titanic-survival-data-visualization/blob/master/first-feedback-implemented.png)
+
+To address the second round of feedback, I increased the right side padding from 50 pixels to 75 pixels to avoid cutting off the right side of the legend. Below is the updated object I used to store the margins.
+
+```javascript
+var margin = {top: 20, right: 75, bottom: 35, left: 40}
+```
+
+Below is a screenshot of my visualization, which shows the full legend being displayed.
+
+![alt text](https://github.com/bljustice/titanic-survival-data-visualization/blob/master/second-feedback-implemented.png)
+
+Finally, for my third set of feedback, I updated my mouseover function to create a `transform` attribute that was based on the particular `d.y` value being passed to it. The reason I did this is because numbers over 100 take up more space than numbers below 100 and didn't center very well. To account for this, I used a conditional function to return 1 of 2 possible `transform` attributes based on the input value from `d.y`.
+
+Below is the final `showSurvivalData` mouseover function that I used to do this.  
+
 ```javascript
 function showSurvivalData(d, i) {
   svg.append("text")
@@ -21,58 +53,14 @@ function showSurvivalData(d, i) {
       x: function() { return xScale(d.x); },
       y: function() { return yScale(d.y + d.y0); },
     })
-    .attr("transform", "translate(40,-5)")
-    .text(function() { return d.y; });
-}
-```
-![alt text](https://github.com/bljustice/titanic-survival-data-visualization/blob/master/first-feedback-implemented.png)
-
-To address the second round of feedback I received, I updated the axes' lines to be more complementary to the actual ticks for each axis. I did this using the following CSS, which can be seen in the `head` of the `index.html` file included in this repository. This CSS was used from one of Mike Bostock's stacked bar charts listed in the sources of this README file.
-```CSS
-.axis path,
-.axis line {
-  fill: none;
-  stroke: #000;
-  shape-rendering: crispEdges;
-}
-```
-
-I also added a y-axis label to make it more readable to users. Below is the final code used to render the y axis.
-```javascript
-svg.append("g")
-  .attr("class", "y axis")
-  .call(yAxis)
-  .append("text")
-   .attr("transform", "rotate(-90)")
-   .attr("y", 6)
-   .attr("dy", ".71em")
-   .style("text-anchor", "end")
-   .text("Number of Passengers");
-   ```
-
-Below is a screenshot of the results of these changes, which show much for user-friendly axes.
-
-![alt text](https://github.com/bljustice/titanic-survival-data-visualization/blob/master/second-feedback-implemented.png)
-
-Finally, for my third set of feedback, I added 5 pixels of padding between each bar by updating the width values of each rectangle appended to the original svg layers I created. Below is the final code showing this update.
-
-```javascript
-layer.selectAll("rect")
-  .data(function(d) { return d; })
-  .enter().append("rect")
-  .attr("x", function(d) { return xScale(d.x); })
-  .attr("y", function(d) { return yScale(d.y + d.y0); })
-  .attr("height", function(d) { return yScale(d.y0) - yScale(d.y + d.y0); })
-  .attr("width", xScale.rangeBand() - 5)
-  .on("mouseover", showSurvivalData)
-  .on("mouseout", removeSurvivalData);
-```
-I also noticed that the mouseover and legend fonts were not the same as the axes, so I updated them to all match using the following CSS.
-
-```CSS
-text {
-  font-family: sans-serif;
-  font-size: 11px;
+    .attr("transform", function() {
+      if (d.y >= 100) {
+        return "translate(63,-5)";
+      } else {
+        return "translate(68,-5)";
+      }
+    })
+    .text(function() { return [d.y, ((d.y / totalPassengers) * 100).toFixed(2) + "% of Total Passengers"]; });
 }
 ```
 
@@ -80,16 +68,13 @@ Below is a screenshot of these changes in the final `index.html` file.
 
 ![alt text](https://github.com/bljustice/titanic-survival-data-visualization/blob/master/third-feedback-implemented.png)
 
-
 ##Feedback
 
 I reached out to 3 different people about my initial visualization and they each had different feedback, which I have listed below.
 
-  1. The labels for each group is slightly hard to read when I hover over each bar in the graph. Maybe if they were centered it would be easier to read.
-  2. The axes lines are very thick compared to the tick marks. Is there a way to make them more similar?
-  3. There is no padding between each of the bars. I think it would be much easier on the eye if they had some padding between them.
-
-
+  1. The bars in the visualization are too wide and don't seem centered above the x axis tick marks. Is there a way to center them?
+  2. The legend appears to be slightly cut off on the right side. Is there a way to show the full legend?
+  3. Both data points that are shown by the mouseover events aren't centered. Is there a way to center these to make it more legible?
 
 ##Resources
   * https://www.kaggle.com/c/titanic/data
