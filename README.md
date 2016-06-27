@@ -1,7 +1,7 @@
-#Titanic Passenger Survival Status Based on Passenger Class
+#Titanic Passenger Survival Status Based on Age Group, Gender, and Passenger Class
 
 ##Summary
-For this project, I visualized the number of titanic passengers that survived or died based on their age group, gender, and passenger class. I decided to use a stacked bar chart to show these. I used R to aggregate each passenger's survival status based on each of the characteristics mentioned above, and wrote a new CSV file for each characteristic. The original dataset is names `titanic_data.csv` and the grouped versions have been provided below.
+For this project, I visualized the number of Titanic passengers that survived or died based on their age group, gender, and passenger class. I decided to use a stacked bar chart to show these. I used R to aggregate each passenger's survival status based on each of the characteristics mentioned above, and wrote a new CSV file for each characteristic. The original dataset is named `titanic_data.csv` and the grouped versions have been provided below.
 
   * `grouped_by_age_group.csv`
   * `grouped_by_gender.csv`
@@ -14,13 +14,13 @@ Three apparent trends can be seen from the visualizations, which have been liste
   3. The upper class (class 1) had a higher survival rate than the lower class (class 3). This was most likely caused by the fact that the upper class was unloaded before the other 2 classes, and that the lower class didn't even have life boats to transport them to safety.     
 
 ##Design
-As stated in the summary portion, I decided to use a stacked bar chart for the design of this project. Bar charts are very useful for visualizing categorical data so I thought this was the best choice for conveying this visualization's story. I used grey and orange colors for the two different categories since they're two of my favorite colors, and a legend to show users which color defines a particular subgroup. Finally, I used 2 different event handlers to add interactivity. The first changes the color of the particular bar hovered over to purple and displays how many passengers are included in a particular category. It also shows what percentage that group makes up of all of the passengers combined. I feel this percentage helps users not only compare the size of each group to others and to the total number of passengers overall, but to also more easily show the trends mentioned in the summary and conclusion portions of the final `index.html` file. The second event simply removes the element created from the first event once a user navigates away from that part of the chart, and returns the element to its original state.
+As stated in the summary portion, I decided to use a stacked bar chart for the design of this project. Bar charts are very useful for visualizing categorical data so I thought this was the best choice for conveying this visualization's story. I used grey and orange colors for the two different categories since they're two of my favorite colors, and a legend to show users which color defines a particular subgroup. I added radio buttons to allow users to toggle between the three passenger characteristics and display a unique bar chart for each one. Finally, I used 2 different event handlers to add interactivity. The first changes the color of the particular bar hovered over to purple and displays how many passengers are included in a particular category. It also shows what percentage that group makes up of all of the passengers combined. I feel this percentage helps users not only compare the size of each group to others and to the total number of passengers overall, but to also more easily show the trends mentioned in the summary and conclusion portions of the final `index.html` file. The second event simply removes the element created from the first event once a user navigates away from that part of the chart, and returns the element to its original state.
 
-Below is a screenshot of my initial visualization draft, which only included the passenger class visualization. The other two characteristics were added  after my fourth round of feedback.
+Below is a screenshot of my initial visualization draft, which only included the passenger class visualization. The other two characteristics were added after my fourth round of feedback.
 
 ![alt text](https://github.com/bljustice/titanic-survival-data-visualization/blob/master/first-design.png)
 
-I received 4 different sets of feedback on the visualization. I have included screenshots as to how I changed my visualization based on them. Originally I only showed passenger class and how that affected survival status. However based on my fourth round of feedback, I added to additional variables to show how they also affected survival status. The first three rounds of feedback only reflect the single variable visualization.
+I received 4 different sets of feedback on the visualization. I have included screenshots as to how I changed my visualization based on them. Originally I only showed passenger class and how that affected survival status, so the first three rounds of feedback only reflect the single variable visualization.
 
 To address the first set of feedback I received, I subtracted 100 pixels from the `width` attribute of my rectangle layer, which helped shrink the bars in the visualization and center them over their tick marks. Below is the updated `layer` element I used to do this.
 
@@ -102,7 +102,7 @@ function showSurvivalData(d, i) {
 
 My final round of feedback was from my Udacity project reviewer, who recommended showing multiple passenger characteristics in the visualization and how they impacted survival status and a summary of the conclusions behind the visualization. To address this, I added 2 additional passenger characteristics, age group, and gender, to the visualization with a brief summary, conclusion, and some additional findings to help tell a story to the user as they interacted with the visualization.
 
-Technically in order to do this, I created the 3 new CSV files mentioned in the summary portion of this file, which grouped data based on the 3 variables mentioned above. Once these were created, I used three different functions to load in each CSV file depending on which radio button was selected. This was done using the following event handlers.
+Technically, in order to show three different visualizations based on radio button selection, I added 3 radio buttons to the `index.html` file and created the 3 new CSV files mentioned in the summary portion of this file. These grouped survival status based on the 3 variables mentioned above. Once these were created, I used three different functions to load in each CSV file depending on which radio button was selected. This was done using the following event handlers.
 
 ```javascript
 d3.select('#radio-age').on("click", function() {
@@ -118,7 +118,7 @@ d3.select('#radio-passenger-class').on("click", function() {
 });
 ```
 
-Afterwards, I added the radio buttons mentioned above to allow users to toggle between the three different characteristics so they could be viewed one at a time. Finally, I added a small summary at the beginning of the page, a conclusion at the end including the most apparent trends, and some additional trends I found when analyzing the data in case the reader was interested. Below is a screenshot of the final updated based on the fourth round of feedback, which is also reflective of the final `index.html` file in this repository.
+Finally, I added a small summary at the beginning of the page, a conclusion at the end including the most apparent trends, and some additional trends I found while analyzing the data in case the reader was interested. Below is a screenshot of the final updated based on the fourth round of feedback, which is also reflective of the final `index.html` file in this repository.
 
 ![alt text](https://github.com/bljustice/titanic-survival-data-visualization/blob/master/fourth-feedback-implemented.png)
 
