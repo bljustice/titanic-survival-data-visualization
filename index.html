@@ -1,41 +1,72 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <script src="https://d3js.org/d3.v3.min.js"></script>
-    <style>
-      h1 {
-        font-family: sans-serif;
-        font-size: 16px;
-      }
-      rect:hover {
-        fill: #6b486b;
-      }
-      .axis,
-      .label {
-        font-family: sans-serif;
-        font-size: 11px;
-      }
-      .axis path,
-      .axis line {
-        fill: none;
-        stroke: #000;
-        shape-rendering: crispEdges;
-      }
-      text {
-        font-family: sans-serif;
-        font-size: 11px;
-      }
-    </style>
-  </head>
-  <body>
-    <h1>Titanic Passenger Survival Status by Passenger Class</h1>
-    <script>
+<head>
+  <meta charset="utf-8">
+  <script src="//d3js.org/d3.v3.min.js"></script>
+  <style>
+    h1 {
+      font-family: sans-serif;
+      font-size: 18px;
+    }
+
+    h2 {
+      font-family: sans-serif;
+      font-size: 14px;
+    }
+
+    p, form, ul, ol {
+      font-family: sans-serif;
+      font-size: 12px;
+    }
+
+    input {
+      font-family: sans-serif;
+    }
+
+    rect:hover {
+      fill: #6b486b;
+    }
+
+    .axis,
+    .label {
+      font-family: sans-serif;
+      font-size: 11px;
+    }
+
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke: #000;
+      shape-rendering: crispEdges;
+    }
+
+    text {
+      font-family: sans-serif;
+      font-size: 11px;
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <h1 id="header-contents">Titanic Passenger Survival Status based on Age Group, Gender, and Passenger Class</h1>
+    <h2>Summary</h2>
+    <p>This visualization shows three different Titanic passenger features and how they affected that passenger's survival status
+      after the ship crashed. The three features are age group, gender and passenger group.
+      Each feature can be loaded individually by selecting one of the radio buttons below. There are 891 passengers shown in the gender and passenger class charts,
+      while the age group chart shows 714 passengers. The reason that there are less passengers in the age group visualization is because several passengers did not have a
+      reported age. I decided to exclude them from this to make the bar chart easier to read.</p></br>
+    <form action="">
+      <input id="radio-age" type="radio" name="group" value="age" checked> Age Group<br>
+      <input id="radio-gender" type="radio" name="group" value="gender"> Gender<br>
+      <input id="radio-passenger-class" type="radio" name="group" value="passenger class"> Passenger Group<br>
+    </form>
+  </div>
+  <script>
 
       // create margin, height, and width of svg
       var margin = {top: 20, right: 75, bottom: 35, left: 40},
           width = 960 - margin.left - margin.right,
-          height = 500 - margin.top - margin.bottom;
+          height = 600 - margin.top - margin.bottom;
 
       // create x scale
       var xScale = d3.scale.ordinal()
@@ -66,121 +97,354 @@
           .append("g")
           .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-      d3.csv("titanic_grouped_data.csv", type, function(error, data) {
-        if (error) throw error;
+      function showAgeGroupData() {
 
-        // set color domain
-        color.domain(d3.keys(data[0]).filter(function(d) { return d !== 'Passenger Class' && d !== ''; }));
+        // clear all contents from previous state
+        svg.selectAll("*").remove();
 
-        // map color domain values to age category in dataset
-        var layers = d3.layout.stack()(color.domain().map(function(category) {
-          return data.map(function(d) {
-            return {x: d['Passenger Class'], y: d[category]};
-          });
-        }));
+        // read in age group csv data
+        d3.csv("group_by_age_group.csv", type, function(error, data) {
 
-        // set x domain to the age groups
-        xScale.domain(layers[0].map(function(d) { return d.x; }));
+          if (error) throw error;
 
-        // set y domain to 0 - max bar height of both survived and died passengers
-        yScale.domain([0, d3.max(layers[layers.length - 1], function(d) { return d.y0 + d.y; })])
+          // set color domain
+          color.domain(d3.keys(data[0]).filter(function(d) { return d !== 'Age Group'; }));
 
-        // create x axis in svg
-        svg.append("g")
-          .attr("class", "x axis")
-          .attr("transform", "translate(0," + height +  ")")
-          .call(xAxis);
+          // map color domain values to age category in dataset
+          var layers = d3.layout.stack()(color.domain().map(function(category) {
+            return data.map(function(d) {
+              return {x: d['Age Group'], y: d[category]};
+            });
+          }));
 
-        // create y axis in svg
-        svg.append("g")
-          .attr("class", "y axis")
-          .call(yAxis)
-          .append("text")
-           .attr("transform", "rotate(-90)")
-           .attr("y", 6)
-           .attr("dy", ".71em")
-           .style("text-anchor", "end")
-           .text("Number of Passengers");
+          // set x domain to the age groups
+          xScale.domain(layers[0].map(function(d) { return d.x; }));
 
-        // add x-axis label
-        svg.append("text")
-          .attr("class", "x-axis label")
-          .attr("text-anchor", "middle")
-          .attr("transform", "translate(" + width / 2 + "," + (height + 28) + ")")
-          .text("Passenger Class");
+          // set y domain to 0 - max bar height of both survived and died passengers
+          yScale.domain([0, d3.max(layers[layers.length - 1], function(d) { return d.y0 + d.y; })])
 
-        // create layer for bar graph level
-        var layer = svg.selectAll(".layer")
-          .data(layers)
-          .enter().append("g")
-          .attr("class", "layer")
-          .style("fill", function(d, i) { return color(i); });
+          // create x axis in svg
+          svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + height +  ")")
+            .call(xAxis);
 
-        // append rectangles to layers
-        layer.selectAll("rect")
-          .data(function(d) { return d; })
-          .enter().append("rect")
-          .attr("x", function(d) { return xScale(d.x) + 50; })
-          .attr("y", function(d) { return yScale(d.y + d.y0); })
-          .attr("height", function(d) { return yScale(d.y0) - yScale(d.y + d.y0); })
-          .attr("width", xScale.rangeBand() - 100)
-          .on("mouseover", showSurvivalData)
-          .on("mouseout", removeSurvivalData);
+          // create y axis in svg
+          svg.append("g")
+            .attr("class", "y axis")
+            .call(yAxis)
+            .append("text")
+             .attr("transform", "rotate(-90)")
+             .attr("y", 6)
+             .attr("dy", ".71em")
+             .style("text-anchor", "end")
+             .text("Number of Passengers");
 
-       // create legend based on survived and died color codes
-        var legend = svg.selectAll('.legend')
-          .data(color.domain().slice().filter(function(d) { return d !== 0 && d !== 1; }))
-          .enter().append("g")
-          .attr("class", "legend")
-          .attr("transform", function(d, i) { return "translate(60," + i * 20 + ")"; })
-          .text(function(d) { return d; });
-
-        legend.append("rect")
-          .attr("x", width - 18)
-          .attr("width", 18)
-          .attr("height", 18)
-          .style("fill", color);
-
-        legend.append("text")
-          .attr("x", width - 24)
-          .attr("y", 9)
-          .attr("dy", ".35em")
-          .style("text-anchor", "end")
-          .text(function(d) { return d; });
-
-
-        // create variable to hold the total number of passengers in the dataset for event handler function
-        totalPassengers = d3.sum(data, function(d) { return d.Survived + d.Died; });
-
-        /* add event handler function for mouseovers that displays both the count of the particular
-        instance hovered over and what percentage of all passengers that instance contains */
-        function showSurvivalData(d, i) {
+          // add x-axis label
           svg.append("text")
-            .attr({
-              id: "text" + d.x + "-" + d.y + "-" + i,
-              x: function() { return xScale(d.x); },
-              y: function() { return yScale(d.y + d.y0); },
-            })
-            .attr("transform", function() {
-              if (d.y >= 100) {
-                return "translate(63,-5)";
-              } else {
-                return "translate(68,-5)";
-              }
-            })
-            .text(function() { return [d.y, ((d.y / totalPassengers) * 100).toFixed(2) + "% of Total Passengers"]; });
-        }
-        // add event handler function to remove the element when mouseout occurs
-        function removeSurvivalData(d, i) {
-          d3.select("#text" + d.x + "-" + d.y + "-" + i).remove();
-        }
-      });
+            .attr("class", "x-axis label")
+            .attr("text-anchor", "middle")
+            .attr("transform", "translate(" + width / 2 + "," + (height + 28) + ")")
+            .text("Age Group");
 
-      // Convert survived and died columns to integer values for correct y scaling
+          // create layer for bar graph level
+          var layer = svg.selectAll(".layer")
+            .data(layers)
+            .enter().append("g")
+            .attr("class", "layer")
+            .style("fill", function(d, i) { return color(i); });
+
+          // append rectangles to layers
+          layer.selectAll("rect")
+            .data(function(d) { return d; })
+            .enter().append("rect")
+            .attr("x", function(d) { return xScale(d.x) + 15; })
+            .attr("y", function(d) { return yScale(d.y + d.y0); })
+            .attr("height", function(d) { return yScale(d.y0) - yScale(d.y + d.y0); })
+            .attr("width", xScale.rangeBand() - 20)
+            .on("mouseover", showSurvivalData)
+            .on("mouseout", removeSurvivalData);
+
+         // create legend based on survived and died color codes
+          var legend = svg.selectAll('.legend')
+            .data(color.domain().slice().filter(function(d) { return d !== 0 && d !== 1; }))
+            .enter().append("g")
+            .attr("class", "legend")
+            .attr("transform", function(d, i) { return "translate(60," + i * 20 + ")"; })
+            .text(function(d) { return d; });
+
+          legend.append("rect")
+            .attr("x", width - 18)
+            .attr("width", 18)
+            .attr("height", 18)
+            .style("fill", color);
+
+          legend.append("text")
+            .attr("x", width - 24)
+            .attr("y", 9)
+            .attr("dy", ".35em")
+            .style("text-anchor", "end")
+            .text(function(d) { return d; });
+
+          totalPassengers = d3.sum(data, function(d) { return d.Survived + d.Died; });
+
+        });
+      }
+
+      function showGenderData() {
+
+        // clear all contents from previous state
+        svg.selectAll("*").remove();
+
+        d3.csv("group_by_gender.csv", type, function(error, data) {
+
+          if (error) throw error;
+
+          // set color domain
+          color.domain(d3.keys(data[0]).filter(function(d) { return d !== 'Gender'; }));
+
+          // map color domain values to age category in dataset
+          var layers = d3.layout.stack()(color.domain().map(function(category) {
+            return data.map(function(d) {
+              return {x: d.Gender, y: d[category]};
+            });
+          }));
+
+          // set x domain to the age groups
+          xScale.domain(layers[0].map(function(d) { return d.x; }));
+
+          // set y domain to 0 - max bar height of both survived and died passengers
+          yScale.domain([0, d3.max(layers[layers.length - 1], function(d) { return d.y0 + d.y; })])
+
+          // create x axis in svg
+          svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + height +  ")")
+            .call(xAxis);
+
+          // create y axis in svg
+          svg.append("g")
+            .attr("class", "y axis")
+            .call(yAxis)
+            .append("text")
+             .attr("transform", "rotate(-90)")
+             .attr("y", 6)
+             .attr("dy", ".71em")
+             .style("text-anchor", "end")
+             .text("Number of Passengers");
+
+          // add x-axis label
+          svg.append("text")
+            .attr("class", "x-axis label")
+            .attr("text-anchor", "middle")
+            .attr("transform", "translate(" + width / 2 + "," + (height + 28) + ")")
+            .text("Gender");
+
+          // create layer for bar graph level
+          var layer = svg.selectAll(".layer")
+            .data(layers)
+            .enter().append("g")
+            .attr("class", "layer")
+            .style("fill", function(d, i) { return color(i); });
+
+          // append rectangles to layers
+          layer.selectAll("rect")
+            .data(function(d) { return d; })
+            .enter().append("rect")
+            .attr("x", function(d) { return xScale(d.x) + 50; })
+            .attr("y", function(d) { return yScale(d.y + d.y0); })
+            .attr("height", function(d) { return yScale(d.y0) - yScale(d.y + d.y0); })
+            .attr("width", xScale.rangeBand() - 100)
+            .on("mouseover", showSurvivalData)
+            .on("mouseout", removeSurvivalData);
+
+         // create legend based on survived and died color codes
+          var legend = svg.selectAll('.legend')
+            .data(color.domain().slice().filter(function(d) { return d !== 0 && d !== 1; }))
+            .enter().append("g")
+            .attr("class", "legend")
+            .attr("transform", function(d, i) { return "translate(60," + i * 20 + ")"; })
+            .text(function(d) { return d; });
+
+          legend.append("rect")
+            .attr("x", width - 18)
+            .attr("width", 18)
+            .attr("height", 18)
+            .style("fill", color);
+
+          legend.append("text")
+            .attr("x", width - 24)
+            .attr("y", 9)
+            .attr("dy", ".35em")
+            .style("text-anchor", "end")
+            .text(function(d) { return d; });
+
+          totalPassengers = d3.sum(data, function(d) { return d.Survived + d.Died; });
+
+        });
+      }
+
+      function showPassengerClassData() {
+
+        // clear all contents from previous state
+        svg.selectAll("*").remove();
+
+        d3.csv("group_by_passenger_group.csv", type, function(error, data) {
+
+          if (error) throw error;
+
+          // set color domain
+          color.domain(d3.keys(data[0]).filter(function(d) { return d !== 'Passenger Class'; }));
+
+          // map color domain values to age category in dataset
+          var layers = d3.layout.stack()(color.domain().map(function(category) {
+            return data.map(function(d) {
+              return {x: d['Passenger Class'], y: d[category]};
+            });
+          }));
+
+          // set x domain to the age groups
+          xScale.domain(layers[0].map(function(d) { return d.x; }));
+
+          // set y domain to 0 - max bar height of both survived and died passengers
+          yScale.domain([0, d3.max(layers[layers.length - 1], function(d) { return d.y0 + d.y; })])
+
+          // create x axis in svg
+          svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + height +  ")")
+            .call(xAxis);
+
+          // create y axis in svg
+          svg.append("g")
+            .attr("class", "y axis")
+            .call(yAxis)
+            .append("text")
+             .attr("transform", "rotate(-90)")
+             .attr("y", 6)
+             .attr("dy", ".71em")
+             .style("text-anchor", "end")
+             .text("Number of Passengers");
+
+          // add x-axis label
+          svg.append("text")
+            .attr("class", "x-axis label")
+            .attr("text-anchor", "middle")
+            .attr("transform", "translate(" + width / 2 + "," + (height + 28) + ")")
+            .text("Passenger Class");
+
+          // create layer for bar graph level
+          var layer = svg.selectAll(".layer")
+            .data(layers)
+            .enter().append("g")
+            .attr("class", "layer")
+            .style("fill", function(d, i) { return color(i); });
+
+          // append rectangles to layers
+          layer.selectAll("rect")
+            .data(function(d) { return d; })
+            .enter().append("rect")
+            .attr("x", function(d) { return xScale(d.x) + 50; })
+            .attr("y", function(d) { return yScale(d.y + d.y0); })
+            .attr("height", function(d) { return yScale(d.y0) - yScale(d.y + d.y0); })
+            .attr("width", xScale.rangeBand() - 100)
+            .on("mouseover", showSurvivalData)
+            .on("mouseout", removeSurvivalData);
+
+         // create legend based on survived and died color codes
+          var legend = svg.selectAll('.legend')
+            .data(color.domain().slice().filter(function(d) { return d !== 0 && d !== 1; }))
+            .enter().append("g")
+            .attr("class", "legend")
+            .attr("transform", function(d, i) { return "translate(60," + i * 20 + ")"; })
+            .text(function(d) { return d; });
+
+          legend.append("rect")
+            .attr("x", width - 18)
+            .attr("width", 18)
+            .attr("height", 18)
+            .style("fill", color);
+
+          legend.append("text")
+            .attr("x", width - 24)
+            .attr("y", 9)
+            .attr("dy", ".35em")
+            .style("text-anchor", "end")
+            .text(function(d) { return d; });
+
+          totalPassengers = d3.sum(data, function(d) { return d.Survived + d.Died; });
+
+        });
+      }
+
+      /* add event handler function for mouseovers that displays both the count of the particular
+      instance hovered over and what percentage of all passengers that instance contains */
+      function showSurvivalData(d, i) {
+        svg.append("text")
+          .attr({
+            id: "text" + "-" + d.y + "-" + i,
+            x: function() { return xScale(d.x); },
+            y: function() { return yScale(d.y + d.y0); },
+          })
+          .attr("transform", function() {
+            if (xScale.rangeBand() - 100 < 100) {
+              return "translate(45, -5)";
+            }
+            else if (xScale.rangeBand() - 100 >= 100 && xScale.rangeBand() - 100 <= 190) {
+              return "translate(67, -5)"
+            } else {
+              return "translate(145, -5)";
+            }
+          })
+          .text(function() { return [d.y, ((d.y / totalPassengers) * 100).toFixed(2) + "% of Total Passengers"]; });
+      }
+
+      // add event handler function to remove the element when mouseout occurs
+      function removeSurvivalData(d, i) {
+        d3.select("#text" + "-" + d.y + "-" + i).remove();
+      }
+
+      // Convert survived and died columns to integer values for correct y axis scaling
       function type(d) {
         ["Survived", "Died"].forEach(function(column) { d[column] = +d[column]; });
         return d;
       }
-    </script>
-  </body>
+
+      // set age group visualization as default when page is requested or refreshed
+      showAgeGroupData();
+
+      // create event handler functions to load data selected by radio button
+      d3.select('#radio-age').on("click", function() {
+        showAgeGroupData();
+      });
+
+      d3.select('#radio-gender').on("click", function() {
+        showGenderData();
+      });
+
+      d3.select('#radio-passenger-class').on("click", function() {
+        showPassengerClassData();
+      });
+
+  </script>
+
+  <h2>Conclusion</h2>
+  <p>From a high level, there are three very apparent conclusions that can be drawn from the data, which have been listed below.
+    <ol>
+      <li>The majority of passengers did not survive after the Titanic crashed.</li>
+      <li>Females had a higher chance of survival. This was most likely caused by the fact that women and children were moved off the boat first after it crashed.</li>
+      <li>Upper class passengers had a higher chance of survival than the lower class did. This was most likely caused by the upper class being unloaded before
+      the other two classes were, and that the lower class (class 3) did not have lifeboats.</li>
+    </ol>
+
+  <p>A couple of other specific findings from this visualization can be found below. These trends are based on the sample dataset used.
+  All percentages are rounded to the nearest whole number.</p>
+  <ul>
+    <li>Of all passengers in the age group dataset, 54% were between 20-40 years old. Of that group, 40% survived.</li>
+    <li>The majority of passengers were in passenger class 3, which was the lowest class. Of that group, 24% survived.</li>
+    <li>The majority of male passengers did not survive (81% died), but the majority of females did (26% died).</li>
+    <li>The passenger group with most survivors was group 1, which was considered the highest class group.
+      This group made up 24% of all passengers, and 63% of them survived.
+  </ul>
+</body>
 </html>
