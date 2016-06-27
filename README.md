@@ -102,7 +102,7 @@ function showSurvivalData(d, i) {
 
 My final round of feedback was from my Udacity project reviewer, who recommended showing multiple passenger characteristics in the visualization and how they impacted survival status and a summary of the conclusions behind the visualization. To address this, I added 2 additional passenger characteristics, age group, and gender, to the visualization with a brief summary, conclusion, and some additional findings to help tell a story to the user as they interacted with the visualization.
 
-Technically, in order to show three different visualizations based on radio button selection, I added 3 radio buttons to the `index.html` file and created the 3 new CSV files mentioned in the summary portion of this file. These grouped survival status based on the 3 variables mentioned above. Once these were created, I used three different functions to load in each CSV file depending on which radio button was selected. This was done using the following event handlers.
+Technically, in order to show three different visualizations based on radio button selection, I added 3 radio buttons to the `index.html` file and created the 3 new CSV files mentioned in the summary portion of this file. These grouped survival status based on the 3 variables mentioned above. Once these were created, I used three different functions to load in each CSV file depending on which radio button was selected. This was done using the following functions.
 
 ```javascript
 d3.select('#radio-age').on("click", function() {
