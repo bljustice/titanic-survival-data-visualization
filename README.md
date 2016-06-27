@@ -72,7 +72,7 @@ function showSurvivalData(d, i) {
 }
 ```
 
-Below is a screenshot of the changes I made based on the third round of feedback.
+Below is a screenshot of the changes I made for my third round of feedback.
 
 ![alt text](https://github.com/bljustice/titanic-survival-data-visualization/blob/master/third-feedback-implemented.png)
 
